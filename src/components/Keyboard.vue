@@ -3,7 +3,7 @@
     <table class="keyboard-table">
       <tr>
         <td colspan="26">
-          <div class="h1">Encrypted Keyboard:</div>
+          <h1>Encrypted Keyboard:</h1>
         </td>
       </tr>
       <tr v-for="(cryptRow, index) in keyboardRows" :key="index">
@@ -34,11 +34,10 @@
       </tr>
     </table>
   </div>
-  <div class="encrypt-object">
-    <KeyboardToObject class="encrypt-object" v-model="encryptKeyboard"></KeyboardToObject>
+  <div class="crypt-sec">
+    <KeyboardToObject v-model="encryptKeyboard"></KeyboardToObject>
+    <CryptDecrypt v-model="encryptKeyboard"></CryptDecrypt>
   </div>
-  <CryptDecrypt v-model="encryptKeyboard"></CryptDecrypt>
-
 </template>
 
 <script setup>
@@ -52,13 +51,13 @@
   let symbolToAdd = ref('');
 
   const encryptKeyboard = ref({
-    '0': 'अ', '1': 'आ', '2': 'इ', '3': 'ई', '4': 'उ', '5': 'ऊ', '6': 'ऋ', '7': 'ए', '8': 'ऐ', '9': 'ओ',
-    'A': 'क', 'B': 'ख', 'C': 'ग', 'D': 'घ', 'E': 'ङ', 'F': 'च', 'G': 'छ', 'H': 'ज', 'I': 'झ', 'J': 'ञ',
-    'K': 'ट', 'L': 'ठ', 'M': 'ड', 'N': 'ढ', 'O': 'ण', 'P': 'त', 'Q': 'थ', 'R': 'द', 'S': 'ध', 'T': 'न',
-    'U': 'प', 'V': 'फ', 'W': 'ब', 'X': 'भ', 'Y': 'म', 'Z': 'य',
-    'a': 'र', 'b': 'ल', 'c': 'व', 'd': 'स', 'e': 'ह', 'f': 'क्ष', 'g': 'त्र', 'h': 'ज्ञ',
-    'i': 'ॐ', 'j': 'ं', 'k': 'ष', 'l': 'ॠ', 'm': 'ॡ', 'n': 'अं', 'o': 'अः', 'p': 'ँ', 'q': '्',
-    'r': 'ा', 's': 'ि', 't': 'ी', 'u': 'ु', 'v': 'ू', 'w': 'ृ', 'x': 'े', 'y': 'ै', 'z': 'ो',
+    '0': '♨', '1': '✡', '2': '✷', '3': '✥', '4': '▩', '5': '♜', '6': '♛', '7': '△', '8': '▤', '9': '▣', ' ': '%',
+    'A': '▦', 'B': '✪', 'C': '✢', 'D': '✱', 'E': '▪', 'F': '✧', 'G': '✹', 'H': '✺', 'I': '▧', 'J': '▬',
+    'K': '▨', 'L': '✤', 'M': '◩', 'N': '◬', 'O': '◪', 'P': '◭', 'Q': '✦', 'R': '✶', 'S': '✣', 'T': '✯',
+    'U': '▢', 'V': '♚', 'W': '✰', 'X': '□', 'Y': '❅', 'Z': '▻',
+    'a': '◧', 'b': '?', 'c': '▲', 'd': '◫', 'e': '♝', 'f': '◥', 'g': '♬', 'h': '♘', 'i': '♟', 'j': '♧',
+    'k': '♙', 'l': '◯', 'm': '❃', 'n': '◮', 'o': '✸', 'p': '&', 'q': '♣', 'r': '!', 's': '№',
+    't': '✵', 'u': '♞', 'v': '@', 'w': '✽', 'x': '✠', 'y': '✴', 'z': '∐'
   });
 
   const symbols = ref({
@@ -109,15 +108,11 @@
     return rows;
   };
 
-  const keyboardRows = computed(() => divideObjectIntoRows(encryptKeyboard.value, ['9', 'Z']));
-  const symbolsRows = computed(() => divideObjectIntoRows(symbols.value, ['27']));
+  const keyboardRows = computed(() => divideObjectIntoRows(encryptKeyboard.value, [' ', 'Z']));
+  const symbolsRows = computed(() => divideObjectIntoRows(symbols.value, ['26']));
 </script>
 
 <style>
-
-.encrypt-object{
-  width: 150px;
-}
 
 .blue{
   background-color: #bae8e8;
@@ -136,5 +131,8 @@
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   font-weight: bold;
+}
+.crypt-sec{
+  display: flex;
 }
 </style>

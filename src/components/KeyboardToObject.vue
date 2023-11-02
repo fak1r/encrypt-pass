@@ -45,23 +45,23 @@
 
 <style scoped>
 
-  .encrypt-object {
-    width: 100%;
-    height: 700px; 
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    line-height: 1.5;
-    margin-left: 20px;
-    margin-top: 82px;
-    min-width: 150px;
-    max-width: 150px;
-  }
+.encrypt-object {
+  width: 100%;
+  height: 700px; 
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  line-height: 1.5;
+  margin-left: 20px;
+  margin-top: 82px;
+  min-width: 150px;
+  max-width: 150px;
+}
 
-  .encrypt-object:focus {
-    border-color: #007bff;
-    outline: none;
-  }
+.encrypt-object:focus {
+  border-color: #007bff;
+  outline: none;
+}
   
 </style>
