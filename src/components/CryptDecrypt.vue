@@ -74,7 +74,7 @@
     }
     decryptedPassword.value = result.join('');
   }
-// CHECK h
+
 </script>
 
 <style>

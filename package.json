@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "gh-pages": "vue-cli-service gh-pages"
   },
   "dependencies": {
     "core-js": "^3.8.3",
@@ -12,7 +15,9 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-service": "~5.0.0"
+    "@vue/cli-service": "~5.0.0",
+    "gh-pages": "^6.0.0",
+    "vue-cli-plugin-gh-pages": "~2.0.0"
   },
   "browserslist": [
     "> 1%",
