@@ -10,6 +10,7 @@
     "gh-pages": "vue-cli-service gh-pages"
   },
   "dependencies": {
+    "@vueuse/core": "^10.5.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13"
   },

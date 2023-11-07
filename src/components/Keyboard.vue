@@ -33,42 +33,38 @@
         </td>
       </tr>
     </table>
-    <div>
-    <p class="h1 newRemove" v-if="symbolToRemove && !repeatedSymbol">
-      Choose new special symbol
-    </p>
-    <p class="h1 newAdd" v-if="symbolToAdd && !repeatedSymbol">
-      Choose symbol to change
-    </p>
-    <p class="h1 repeated" v-if="repeatedSymbol">
-      This symbol already in keyboard
-    </p>
+    <div class="alert">
+      <p class="h1 repeated" v-if="repeatedSymbol">
+        This symbol already in keyboard
+      </p>
+      <p class="h1 newRemove" v-if="symbolToRemove && !repeatedSymbol">
+        Choose new special symbol
+      </p>
+      <p class="h1 newAdd" v-if="symbolToAdd && !repeatedSymbol">
+        Choose symbol to change
+      </p>
+    </div>
   </div>
-  </div>
-
   <div class="crypt-sec">
-    
-    <KeyboardToObject v-model="encryptKeyboard"></KeyboardToObject>
-    <CryptDecrypt v-model="encryptKeyboard"></CryptDecrypt>
+    <KeyboardToObject
+      v-model:keyboard="encryptKeyboard" 
+      v-model:focusOnInputs="focusOnInput"
+    >
+    </KeyboardToObject>
+    <CryptDecrypt 
+      v-model:keyboard="encryptKeyboard" 
+      v-model:focusOnInputs="focusOnInput"
+    >
+    </CryptDecrypt>
   </div>
 </template>
 
 <script setup>
 
-  import { ref, computed, watch } from 'vue';
+  import { ref, computed } from 'vue';
 
   import CryptDecrypt from '@/components/CryptDecrypt.vue';
   import KeyboardToObject from './KeyboardToObject.vue';
-
- /*  const originalKeyboard = ref({
-    '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
-    'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E': 'E', 'F': 'F', 'G': 'G', 'H': 'H', 'I': 'I', 'J': 'J',
-    'K': 'K', 'L': 'L', 'M': 'M', 'N': 'N', 'O': 'O', 'P': 'P', 'Q': 'Q', 'R': 'R', 'S': 'S', 'T': 'T',
-    'U': 'U', 'V': 'V', 'W': 'W', 'X': 'X', 'Y': 'Y', 'Z': 'Z',
-    'a': 'a', 'b': 'b', 'c': 'c', 'd': 'd', 'e': 'e', 'f': 'f', 'g': 'g', 'h': 'h', 'i': 'i', 'j': 'j',
-    'k': 'k', 'l': 'l', 'm': 'm', 'n': 'n', 'o': 'o', 'p': 'p', 'q': 'q', 'r': 'r', 's': 's', 't': 't',
-    'u': 'u', 'v': 'v', 'w': 'w', 'x': 'x', 'y': 'y', 'z': 'z',
-  }); */
 
   const encryptKeyboard = ref({
     '0': '♨', '1': '✡', '2': '✷', '3': '✥', '4': '▩', '5': '♜', '6': '♛', '7': '△', '8': '▤', '9': '▣', ' ': '%',
@@ -81,84 +77,74 @@
   });
 
   const symbols = ref({
-    '1': '┐', '2': '└', '3': '┴', '4': '┌', '5': '─', '6': '│', '7': '┘', '8': '├', '9': '┤', '10': '┬',
-    '11': '▒', '12': '▓', '13': '█', '14': '░', '15': '▀', '16': '▄', '17': '■', '18': '□', '19': '▲', '20': '▼',
-    '21': '◆', '22': '○', '23': '●', '24': '◐', '25': '◑', '26': '◒', '27': '◓', '28': '◔', '29': '◕', '30': '⌂',
-    '31': '★', '32': '☆', '33': '✪', '34': '✽', '35': '✦', '36': '✯', '37': '✰', '38': '✶', '39': '✷', '40': '✵',
-    '41': '✹', '42': '✺', '43': '✸', '44': '✻', '45': '✠', '46': '✡', '47': '✢', '48': '✣', '49': '✤', '50': '✥'
+    '┐': '┐', '└': '└', '┴': '┴', '┌': '┌', '─': '─', '│': '│', '┘': '┘', '├': '├', '┤': '┤', '┬': '┬',
+    '▒': '▒', '▓': '▓', '█': '█', '░': '░', '▀': '▀', '▄': '▄', '■': '■', '□': '□', '▲': '▲', '▼': '▼',
+    '◆': '◆', '○': '○', '●': '●', '◐': '◐', '◑': '◑', '◒': '◒', '◓': '◓', '◔': '◔', '◕': '◕', '⌂': '⌂',
+    '★': '★', '☆': '☆', '✪': '✪', '✽': '✽', '✦': '✦', '✯': '✯', '✰': '✰', '✶': '✶', '✷': '✷', '✵': '✵',
+    '✹': '✹', '✺': '✺', '✸': '✸', '✻': '✻', '✠': '✠', '✡': '✡', '✢': '✢', '✣': '✣', '✤': '✤', '✥': '✥',
+    '⚙': '⚙', '⚚': '⚚', '⚛': '⚛', '⚜': '⚜', '⚝': '⚝', '⚞': '⚞', '⚟': '⚟', '⚠': '⚠', 'œ': 'œ', '⚢': '⚢',
+    '⚣': '⚣', '⚤': '⚤', '⚥': '⚥', '⚦': '⚦', '⚧': '⚧', '⚨': '⚨', '⚩': '⚩', 'Š': 'Š', 'Œ': 'Œ', '⚬': '⚬',
+    '⚭': '⚭', '⚮': '⚮', '⚯': '⚯', '⚰': '⚰', '⚱': '⚱', '⚲': '⚲', '⚳': '⚳', '⚴': '⚴', '⚵': '⚵', '⚶': '⚶',
+    '⚷': '⚷', '⚸': '⚸', '⚹': '⚹', '⚺': '⚺', '⚻': '⚻', '⚼': '⚼', '‡': '‡', '‰': '‰', '⚿': '⚿',
+    // Добавьте или измените символы по вашему желанию
   });
 
- 
+  // замена символов по нажатию мыши
+
   let symbolToRemove = ref('');
   let symbolToAdd = ref('');
   let repeatedSymbol = ref('');
   let clickOnChar = false;
   let clickOnSymbol = false;
-
-/*  let char = ref('');
-
-   const clickOnKey = (key) => {
-    
-    if (originalKeyboard.value[key]){
-      symbolToRemove.value = encryptKeyboard.value[key];
-      char.value = key;
-      clickOnChar = !clickOnChar;
-      if (!clickOnChar) symbolToRemove.value = '';
-    } else {
-      symbolToAdd.value = symbols.value[key];
-      clickOnSymbol = !clickOnSymbol;
-      if (!clickOnSymbol) symbolToAdd.value = '';
-    }
-
-    if (symbolToRemove.value != '' && symbolToAdd.value != ''){
-      encryptKeyboard.value[char.value] = symbolToAdd.value;
-      symbolToRemove.value = '';
-      symbolToAdd.value = '';
-      clickOnChar = false;
-      clickOnSymbol = false;
-    }
-  } */
-
+  const focusOnInput = ref(false);
+  let oldKey = '';
 
   const keyByValue = (symbol, keyboard) => {
     return Object.keys(keyboard).find(key => keyboard[key] === symbol);
   }
 
-
   const chooseSymbolsToChange = (symbol, keyboard, clickOnSymbols = false) => {
     repeatedSymbol.value = false;
     const key = keyByValue(symbol, keyboard);
+
     // если нажали на клавиатуру
     if (key){
+      if (key === oldKey || oldKey === '') clickOnChar = !clickOnChar;
+      if (key != oldKey && clickOnChar === false) clickOnChar = true;
+      oldKey = key;
       symbolToRemove.value = symbol;
-      clickOnChar = !clickOnChar;
       if (!clickOnChar) symbolToRemove.value = '';
-      console.log('symbol:', symbol, 'key:', key, 'keyboard:', keyboard[key], 'symbolToAdd:', symbolToAdd.value, 'symbolToRemove:', symbolToRemove.value);
-
     } 
     else {
+      if (symbol === symbols.value[symbolToAdd.value]) {
+        clickOnSymbol = !clickOnSymbol;
+      } 
+      else clickOnSymbol = true;
+      oldKey = key;
       symbolToAdd.value = symbol;
-      clickOnSymbol = !clickOnSymbol;
-      if (!clickOnSymbol) symbolToAdd.value = '';
+      if (!clickOnSymbol) symbolToAdd.value = '';    
     }
-    // проверка есть ли такой символ уже
-    if (clickOnSymbols && keyboard[key] === symbol){
-      repeatedSymbol.value = true;
-    } 
-    
+
+    // проверка на наличие повторов
+    if (clickOnSymbols && Object.values(keyboard).find(el => el === symbol) && 
+    Object.values(symbols.value).find(el => el === symbol)){
+      if (!clickOnChar || !clickOnSymbol) repeatedSymbol.value = false;
+      if (clickOnChar || clickOnSymbol) repeatedSymbol.value = true;
+    } else {
+      repeatedSymbol.value = false;
+    }
+
     // Замена символа
-    if (symbolToRemove.value != '' && symbolToAdd.value != ''){
+    if (symbolToRemove.value && symbolToAdd.value && !repeatedSymbol.value){
       const keyNew = keyByValue(symbolToRemove.value, keyboard);  
       keyboard[keyNew] = symbolToAdd.value;
-
       symbolToRemove.value = '';
       symbolToAdd.value = '';
       clickOnChar = false;
       clickOnSymbol = false;
       repeatedSymbol.value = false;
+      oldKey = '';
     }
-
-    
   }
 
   // Вывод клавиатуры в шаблон в три строки: цифры, заглавные, строчные
@@ -178,27 +164,36 @@
         currentRow = {};
       }
     }
-
     return rows;
   };
 
   const keyboardRows = computed(() => divideObjectIntoRows(encryptKeyboard.value, [' ', 'Z']));
-  const symbolsRows = computed(() => divideObjectIntoRows(symbols.value, ['26']));
+  const symbolsRows = computed(() => divideObjectIntoRows(symbols.value, ['◒', '⚚', '⚴']));
 
   // отслеживание нажатий на клавиатуре, для быстрой замены символов
+
   document.addEventListener('keydown', (e) => {
-    if (encryptKeyboard.value[e.key]){
-      symbolToRemove.value = encryptKeyboard.value[e.key];
-      clickOnChar = !clickOnChar;
+    // отслеживаем нажатие только если не вводим данные в инпут
+    if (!focusOnInput.value){
+      changeCharactersByKeydown(encryptKeyboard.value, e.key);
+    }
+  }) 
+
+  const changeCharactersByKeydown = (keyboard, key) => {
+    if (keyboard[key]){
+      if (key === oldKey || oldKey === '') clickOnChar = !clickOnChar;
+      if (key != oldKey && clickOnChar === false) clickOnChar = true;
+      oldKey = key;
+      symbolToRemove.value = keyboard[key];
       if (!clickOnChar) symbolToRemove.value = '';
     }
-    if (e.key === 'Escape'){
+    if (key === 'Escape'){
       symbolToRemove.value = '';
       symbolToAdd.value = '';
     }
-    if (symbolToAdd.value != ''){
-      const keyNew = keyByValue(symbolToRemove.value, encryptKeyboard.value);  
-      encryptKeyboard.value[keyNew] = symbolToAdd.value;
+    if (symbolToAdd.value){
+      const keyNew = keyByValue(symbolToRemove.value, keyboard);  
+      keyboard[keyNew] = symbolToAdd.value;
 
       symbolToRemove.value = '';
       symbolToAdd.value = '';
@@ -206,16 +201,7 @@
       clickOnSymbol = false;
       repeatedSymbol.value = false;
     }
-
-
-  })
-
-/*   watch(encryptKeyboard, () => {
-    if (encryptKeyboard.contains('?')){
-      console.log('yes');
-    }
-  }) */
-  
+  }
 
 </script>
 
@@ -250,5 +236,9 @@
 }
 .repeated{
   color: #efcc03;
+}
+.alert{
+  margin-top: 25px;
+  height: 40px;
 }
 </style>

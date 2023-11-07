@@ -1,5 +1,5 @@
 <template>
-  <div class="crypt-decrypt">
+  <div class="crypt-decrypt" ref="cryptedRef">
     <div class="encrypt">
       
       <div class="h1">Original: {{ originalPassword }}</div>
@@ -15,7 +15,19 @@
         type="button"
         :disabled="!originalPassword"
       >Encrypt</button>
-      <div class="h1">Encrypted: {{ cryptPass }}</div>
+      <div>
+        <p class="h1">Encrypted: {{ cryptPass }}</p>
+        <button
+          @click="copy(cryptPass)"
+          class="btn-crypt"
+          type="button"
+          :disabled="!cryptPass"
+        >
+        <span v-if="!copied">Copy</span>
+        <span v-else>Copied!</span>
+        </button>
+      </div>
+
     </div>
     <hr>
     <div class="decrypt">
@@ -39,26 +51,53 @@
 
 <script setup>
 
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
+  import { useClipboard, useFocusWithin } from '@vueuse/core';
 
   let originalPassword = ref('');
   let cryptPass = ref('');
   let passToDecrypt = ref('');
   let decryptedPassword = ref('');
+  const cryptedRef = ref(null);
 
   const props = defineProps({
-    modelValue: {
+    keyboard: {
       type: Object,
       required: true
-    }
+    },
+    focusOnInputs: {
+      type: Boolean,
+      required: true
+    },
   });
-  
+
+  const emit = defineEmits(['update:focusOnInputs']);
+
+  // функционал копирования пароля
+
+  const { copy, copied } = useClipboard({ source: cryptPass });
+
+  // проверка фокуса 
+
+  const { focused } = useFocusWithin(cryptedRef);
+
+  watch(focused, focused => {
+    if (focused) {
+      emit('update:focusOnInputs', true)
+    }
+    else {
+      emit('update:focusOnInputs', false)
+    }
+  })
+
+  // шифрование и дешифровка пароля
+
   const cryptoPass = () => {
     const password =  originalPassword.value;
     const passArray = password.split('');
     const cryptArray = [];
     passArray.forEach(el => 
-      cryptArray.push(props.modelValue[el]));
+      cryptArray.push(props.keyboard[el]));
     cryptPass.value = cryptArray.join('');
   }
 
@@ -66,8 +105,8 @@
     const decryptArr = passToDecrypt.value.split('');
     const result = [];
     for (let i = 0; i <= decryptArr.length; i++){
-      Object.keys(props.modelValue).find(key => {
-        if (props.modelValue[key] === decryptArr[i]){
+      Object.keys(props.keyboard).find(key => {
+        if (props.keyboard[key] === decryptArr[i]){
           result.push(key)
         }
       });

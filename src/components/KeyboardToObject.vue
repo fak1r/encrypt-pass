@@ -5,6 +5,7 @@
     name="crypt-keyboard"
     rows="50"
     class="encrypt-object"
+    ref="objectRef"
     v-model="encryptKeyboardText"
   ></textarea>
 </template>
@@ -12,34 +13,59 @@
 <script setup>
 
   import { ref, watch } from 'vue';
+  import { useFocusWithin } from '@vueuse/core';
 
   const props = defineProps({
-    modelValue: {
+    keyboard: {
       type: Object,
       required: true
-    }
+    },
+    focusOnInputs: {
+      type: Boolean,
+      required: true
+    },
   });
 
-  const emit = defineEmits(['update:modelValue']);
-  const encryptKeyboardText = ref(JSON.stringify(props.modelValue, null, 2));
-  const propsCopy = ref(props.modelValue);
+  const emit = defineEmits(['update:keyboard', 'update:focusOnInputs']);
+
+  const encryptKeyboardText = ref(JSON.stringify(props.keyboard, null, 2));
+  const propsCopy = ref(props.keyboard);
+  const objectRef = ref(null);
+
+  // отслеживание изменений в textarea и обновление в объекте
 
   watch(encryptKeyboardText, (newText) => {
     try {
-      emit('update:modelValue', JSON.parse(newText));
+      emit('update:keyboard', JSON.parse(newText));
     } catch (error) {
       console.error('Invalid JSON:', error);
     }
   });
 
+  // отслеживание изменений в объекте и обновление в textarea
+
   watch(propsCopy, (newVal) => {
     encryptKeyboardText.value = JSON.stringify(newVal, null, 2);
   }, { deep: true });
   
-  // Обновление propsCopy при изменении props.modelValue
-  watch(() => props.modelValue, (newVal) => {
+  // обновление propsCopy при изменении props.keyboard (без копии не отслеживает)
+
+  watch(() => props.keyboard, (newVal) => {
     propsCopy.value = newVal;
   }, { deep: true });
+
+  // проверка фокуса
+
+  const { focused } = useFocusWithin(objectRef);
+
+  watch(focused, focused => {
+    if (focused) {
+      emit('update:focusOnInputs', true)
+    }
+    else {
+      emit('update:focusOnInputs', false)
+    }
+  })
 
 </script>
 
